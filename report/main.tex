@@ -80,4 +80,58 @@ Observe that $V$ contains $3^t$ vectors, and $V_T$ contains $2^t$ vectors.
     \label{oracle}
   \end{equation}
 \end{defn}
+\section{Provable Approximated Learnability (PAC)}
+\begin{defn}[Program] 
+  A program in this context is boolean expression that depends on the
+  variables $p_1,\dots,p_t$. More formally, the set of the program
+  $\mathcal{P}$ can be recursively descried as follow.
+  \begin{enumerate}
+    \item Each variable $p_1,\dots,p_t$ is a program, i.e $P\subseteq \mathcal{P}$.
+    \item If $f$ is a program then $\lnot f$ is a program.
+    \item If $f,g$ are programs then $f \texttt{op} g$ is a program for each
+      boolean operator $\texttt{op}\in\left\{\land, \lor \right\}$.
+  \end{enumerate}
+
+  Each program $f$ can be evaluated over a vector $v$ in a recursive manner.
+  We indicate with $f(v)\in\{0,1,\star\}$ the evaluation.
+  \begin{enumerate}
+    \item If the program is a single variable $f = p \in P$, then $f(v) =
+      v(p)$.
+    \item If the program $f$ is of the form $f = \lnot\tilde f$, then
+      \[
+        f(v)=
+        \begin{cases}
+          0,&\tilde f(v)=1\\
+          1,&\tilde f(v)=0\\
+          \star,&\tilde f(v)=\star
+        \end{cases}
+      \]
+    \item If the program $f$ is of the form $f = f_1 \texttt{op} f_2$, then
+      $f(v)= f_1(v)\texttt{op} f_2(v)$ accordingly to the meaning of the
+      boolean operator $\texttt{op}$,  
+      \[
+        f(v) =
+        \begin{cases}
+          f_1(v)\texttt{op}f_2(v),& f_1(v),f_2(v)\ne\star\\
+          \star,&\mbox{otherwise}
+        \end{cases}
+      \]
+  \end{enumerate}
+\end{defn}
+
+Observe that the programs are not boolean functions or concepts. Moreover,
+their evaluation doesn't provide a vector or a total vector.
+\begin{defn}[Learnability]
+  Let $X$ be a set of programs. We will say that $X$ is \textit{learnable} if there
+  exists an algorithm $A$, $A:X\to X$, that depends on a parameter $h$ and
+  that has a polynomial complexity depending on $h$, such that the following
+  properties hold
+  \begin{enumerate}
+    \item For each $f\in X$, and for each distribution $D$ over $f^{-1}(1)$,
+      consider the property $\psi_h$: there exists a program $g$ such that
+      \[
+        \mathbb{P}\left( \psi_h \approx  \right)
+      \]
+  \end{enumerate}
+\end{defn}<++>
 \end{document}
