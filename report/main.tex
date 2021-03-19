@@ -2,6 +2,7 @@
 
 \usepackage{amsthm}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{amsfonts}
 \usepackage{comment}
 \usepackage{cleveref}
@@ -15,7 +16,7 @@ sorting=ynt
 \theoremstyle{definition}
 \newtheorem{defn}{Definition}
 \author{Fabio Brau}
-\institution{University Sant'Anna}
+%\institution{University Sant'Anna}
 \title{Notes on Learning Theory}
 \addbibresource{biblio.bib}
 
@@ -23,4 +24,60 @@ sorting=ynt
 \maketitle
 \tableofcontents
 \section{Basic Definitions}
+\begin{defn}
+  Given a set $P$ of $t$ variables $P=\{p_1,\dots,p_t\}$, a \textit{vector} 
+  is an assignment of the variables to the values $\{0,1,\star\}$. The
+  symbol $\star$ denotes that the variable is undetermined. Formally the set 
+  of all the vectors is $V=\{0,1,\star\}^P$. A particular sub-class of vector 
+  is composed by the \textit{total vectors}, indicated by $V_T$, for which every variable is
+  determined. Formally $V_T = \{0,1\}^P$.
+\end{defn}
+
+Observe that $V$ contains $3^t$ vectors, and $V_T$ contains $2^t$ vectors.
+
+\begin{defn}[Boolean Functions and Concepts]
+  A \textit{boolean function} is any function defined over the total vectors
+  with output in $\{0,1\}$. Formally, the set $\mathcal{F}$ of the boolean
+  functions is $\mathcal{F}=\{0,1\}^{V_T}$. A \textit{concept} is a function
+  defined over the whole vectors, $\mathcal{C}=\{0,1\}^{V}$.
+\end{defn}
+
+\begin{defn}[Coerence]
+  Two vectors $v,w\in V$ are coherent if they take the same values on the
+  common determined variables. Let 
+  $A = (v^{-1}(\star)\cap w^{-1}(\star))^c$, the two vectors are
+  coherent if $v_{\restriction A} = w_{\restriction A}$.
+\end{defn}
+
+\begin{defn}[Extension]
+  Let $F$ be a boolean function. Let $v\in V$ a vector, and let $T(v)=\left\{
+  w\in V_T\,:\, v,w \, \mbox{coherent} \right\}$ be the set of the total vectors
+  coherent with $v$. We say that $F$ can be
+  extended up to $v$ if and only if takes the same values on all the coherent
+  vectors. In formula, 
+  \begin{equation}
+    F(v) = 1 \iff\forall w\in T(v), F(w)=1
+    \label{extension}
+  \end{equation}.
+\end{defn}
+
+\subsection{Learning Protocols}
+\begin{defn}[Example-Learning]
+  Let $F$ be a concept. An \textit{example learning} is a random variable, $\mathcal{E}_F$, 
+  that returns vector such that $F(v)=1$ accordingly to some discrete
+  probability distribution $D$ over $F^{-1}$. In formula, $\mathcal{E} \in F^{-1}(V)$
+  random variable such that $\mathbb{P}(\mathcal{E}_F=v)=D(v)$.
+\end{defn}
+
+\begin{defn}[Oracle]
+  The \textit{oracle}, given a concept $F$ and a vector $v$, returns the value
+  of $F(v)$. Formally, the oracle is the map $\mathcal{O}$ defined as follows
+  \begin{equation}
+    \begin{aligned}
+      \mathcal{O}\,:\, &\mathcal{C}\times V \to \{0,1\}\\
+      & \left( F,v \right) \mapsto F(v)
+    \end{aligned}
+    \label{oracle}
+  \end{equation}
+\end{defn}
 \end{document}
