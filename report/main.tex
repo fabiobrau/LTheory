@@ -11,12 +11,18 @@ backend=biber,
 style=alphabetic,
 sorting=ynt
 ]{biblatex}
+
+
 %% Environments
 \newtheorem{thm}{Theorem}
 \theoremstyle{definition}
 \newtheorem{defn}{Definition}
+%% New Commands
+\newcommand{\CC}{\mathcal{C}}
+\newcommand{\PP}{\mathcal{P}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\TT}{\mathcal{T}}
 \author{Fabio Brau}
-%\institution{University Sant'Anna}
 \title{Notes on Learning Theory}
 \addbibresource{biblio.bib}
 
@@ -39,7 +45,7 @@ Observe that $V$ contains $3^t$ vectors, and $V_T$ contains $2^t$ vectors.
   A \textit{boolean function} is any function defined over the total vectors
   with output in $\{0,1\}$. Formally, the set $\mathcal{F}$ of the boolean
   functions is $\mathcal{F}=\{0,1\}^{V_T}$. A \textit{concept} is a function
-  defined over the whole vectors, $\mathcal{C}=\{0,1\}^{V}$.
+  defined over the whole vectors, $\CC=\{0,1\}^{V}$.
 \end{defn}
 
 \begin{defn}[Coerence]
@@ -50,13 +56,13 @@ Observe that $V$ contains $3^t$ vectors, and $V_T$ contains $2^t$ vectors.
 \end{defn}
 
 \begin{defn}[Extension]
-  Let $F$ be a boolean function. Let $v\in V$ a vector, and let $T(v)=\left\{
+  Let $F$ be a boolean function. For each $v\in V$ vector, let $T(v)=\left\{
   w\in V_T\,:\, v,w \, \mbox{coherent} \right\}$ be the set of the total vectors
-  coherent with $v$. We say that $F$ can be
-  extended up to $v$ if and only if takes the same values on all the coherent
-  vectors. In formula, 
+  coherent with $v$. Let $F^\star$ be a concept, we say that $F^\star$ is an
+  extension of $F$ if and
+  only if the following statement holds 
   \begin{equation}
-    F(v) = 1 \iff\forall w\in T(v), F(w)=1
+    \forall v\in V,\quad F^\star(v) = 1 \iff\forall w\in T(v), F(w)=1
     \label{extension}
   \end{equation}.
 \end{defn}
@@ -65,7 +71,7 @@ Observe that $V$ contains $3^t$ vectors, and $V_T$ contains $2^t$ vectors.
 \begin{defn}[Example-Learning]
   Let $F$ be a concept. An \textit{example learning} is a random variable, $\mathcal{E}_F$, 
   that returns vector such that $F(v)=1$ accordingly to some discrete
-  probability distribution $D$ over $F^{-1}$. In formula, $\mathcal{E} \in F^{-1}(V)$
+  probability distribution $D$ over $F^{-1}(1)$. In formula, $\mathcal{E}_F \in V$
   random variable such that $\mathbb{P}(\mathcal{E}_F=v)=D(v)$.
 \end{defn}
 
@@ -74,64 +80,116 @@ Observe that $V$ contains $3^t$ vectors, and $V_T$ contains $2^t$ vectors.
   of $F(v)$. Formally, the oracle is the map $\mathcal{O}$ defined as follows
   \begin{equation}
     \begin{aligned}
-      \mathcal{O}\,:\, &\mathcal{C}\times V \to \{0,1\}\\
+      \mathcal{O}\,:\, &\CC\times V \to \{0,1\}\\
       & \left( F,v \right) \mapsto F(v)
     \end{aligned}
     \label{oracle}
   \end{equation}
 \end{defn}
 \section{Provable Approximated Learnability (PAC)}
-\begin{defn}[Program] 
-  A program in this context is boolean expression that depends on the
-  variables $p_1,\dots,p_t$. More formally, the set of the program
-  $\mathcal{P}$ can be recursively descried as follow.
-  \begin{enumerate}
-    \item Each variable $p_1,\dots,p_t$ is a program, i.e $P\subseteq \mathcal{P}$.
-    \item If $f$ is a program then $\lnot f$ is a program.
-    \item If $f,g$ are programs then $f \texttt{op} g$ is a program for each
-      boolean operator $\texttt{op}\in\left\{\land, \lor \right\}$.
-  \end{enumerate}
+%\begin{defn}[Program] 
+%  A program in this context is boolean expression that depends on the
+%  variables $p_1,\dots,p_t$. More formally, the set of the program
+%  $\PP$ can be recursively descried as follow.
+%  \begin{enumerate}
+%    \item Each variable $p_1,\dots,p_t$ is a program, i.e $P\subseteq \PP$.
+%    \item If $f$ is a program then $\lnot f$ is a program.
+%    \item If $f,g$ are programs then $f \texttt{op} g$ is a program for each
+%      boolean operator $\texttt{op}\in\left\{\land, \lor \right\}$.
+%  \end{enumerate}
+%
+%  Each program $f$ can be evaluated over a vector $v$ in a recursive manner.
+%  We indicate with $f(v)\in\{0,1,\star\}$ the evaluation.
+%  \begin{enumerate}
+%    \item If the program is a single variable $f = p \in P$, then $f(v) =
+%      v(p)$.
+%    \item If the program $f$ is of the form $f = \lnot\tilde f$, then
+%      \[
+%        f(v)=
+%        \begin{cases}
+%          0,&\tilde f(v)=1\\
+%          1,&\tilde f(v)=0\\
+%          \star,&\tilde f(v)=\star
+%        \end{cases}
+%      \]
+%    \item If the program $f$ is of the form $f = f_1 \texttt{op} f_2$, then
+%      $f(v)= f_1(v)\texttt{op} f_2(v)$ accordingly to the meaning of the
+%      boolean operator $\texttt{op}$,  
+%      \[
+%        f(v) =
+%        \begin{cases}
+%          f_1(v)\texttt{op}f_2(v),& f_1(v),f_2(v)\ne\star\\
+%          \star,&\mbox{otherwise}
+%        \end{cases}
+%      \]
+%  \end{enumerate}
+%\end{defn}
 
-  Each program $f$ can be evaluated over a vector $v$ in a recursive manner.
-  We indicate with $f(v)\in\{0,1,\star\}$ the evaluation.
-  \begin{enumerate}
-    \item If the program is a single variable $f = p \in P$, then $f(v) =
-      v(p)$.
-    \item If the program $f$ is of the form $f = \lnot\tilde f$, then
-      \[
-        f(v)=
-        \begin{cases}
-          0,&\tilde f(v)=1\\
-          1,&\tilde f(v)=0\\
-          \star,&\tilde f(v)=\star
-        \end{cases}
-      \]
-    \item If the program $f$ is of the form $f = f_1 \texttt{op} f_2$, then
-      $f(v)= f_1(v)\texttt{op} f_2(v)$ accordingly to the meaning of the
-      boolean operator $\texttt{op}$,  
-      \[
-        f(v) =
-        \begin{cases}
-          f_1(v)\texttt{op}f_2(v),& f_1(v),f_2(v)\ne\star\\
-          \star,&\mbox{otherwise}
-        \end{cases}
-      \]
-  \end{enumerate}
+%Observe that the programs are not boolean functions or concepts. Moreover,
+%their evaluation doesn't provide a vector or a total vector.
+
+\begin{defn}
+  Let $f\in \CC$ be a concept. A concept $g$ is an asymmetric version
+  of $f$ if
+  \[
+    g(x)=1 \Rightarrow f(x)=1
+  \]
+  Let $\CC(f)$ the set of the asymmetric version of $f$. Let
+  $g\in\CC(f)$, and $D$ an arbitrary distribution over $f$. We say that $g$
+  approximates $f$ with an error $\varepsilon$ if the inducted-measure of the set
+  where the two concepts differs has measure $\varepsilon$. In detail,
+  \[
+    \sum_{v\in f^{-1}(1)\setminus g^{-1}(1)} D(v) = \varepsilon
+  \]
 \end{defn}
-
-Observe that the programs are not boolean functions or concepts. Moreover,
-their evaluation doesn't provide a vector or a total vector.
+Observe that with any distribution $D$, the function $f$ approximate with
+zero error it self.
 \begin{defn}[Learnability]
-  Let $X$ be a set of programs. We will say that $X$ is \textit{learnable} if there
+  Let $X\subseteq\CC$ be a set of concepts. We will say that $X$ is \textit{learnable} if there
   exists an algorithm $A$, $A:X\to X$, that depends on a parameter $h$ and
   that has a polynomial complexity depending on $h$, such that the following
-  properties hold
-  \begin{enumerate}
-    \item For each $f\in X$, and for each distribution $D$ over $f^{-1}(1)$,
-      consider the property $\psi_h$: there exists a program $g$ such that
-      \[
-        \mathbb{P}\left( \psi_h \approx  \right)
-      \]
-  \end{enumerate}
-\end{defn}<++>
+  property hold: For each $f\in X$, and for any arbitrary distribution over $f$,
+  with probability $1-\frac 1 h$, the algorithm $A$ returns an asymmetric
+  version of $f$ that approximates with error at most $\frac 1 h$.
+\end{defn}
+
+
+\section{Combinatorial Lemma}
+Let $X_1,X_2,\dots$, be an infinite sequence of independent Bernoulli
+variables with probability of success at least $\frac 1 h$, where $h\ge 1$ 
+is a fixed real value. Observe that $l(n,k)$ defined as follows
+\[
+  l(n,k) = \Prob\left( X_1+\dots+X_n=k \right)
+\]
+is the probability of having $k$ successes with $n$ trails. If $p_i$ is the probability 
+of success of the variable $X_i$, then we can write explicitly $l$ as follow
+\[
+  l(n,k) = \sum_{\substack{J\subseteq \{1,\dots,n\} \\ |J|=k}} 
+  \left(\prod_{j\in J}p_{j}\right)
+  \left(\prod_{j\not\in J}1 - p_{j}  \right).
+\]
+In conclusion, let $L(s,h)$ be the integer such that
+\[
+  L(h,s) :=\min\left\{ n\,:\, l(n,s)\le\frac 1 h \right\}
+\]
+that represents 
+\begin{center}
+  \it
+  ``the smallest integer such that in $L(s,h)$ independent
+Bernoulli trials each with probability at least $\frac 1 h$ of success, 
+the probability of having fewer than $s$ successes is less than $\frac 1 h$.''
+\end{center}
+The following result provide a bound of $L$ that is independent from the
+$p_i$ (WTF!!!).
+
+\begin{thm} For all integers $S\ge 1$ and all reals $h>1$. For any infinite sequence
+  of Bernoulli variables with probability at least $\frac 1 h$ of success,
+  the following bound holds
+  \[
+    L(h,s) \le 2h\left( s+\ln h \right).
+  \]
+  \begin{proof}
+    No time left, look at the Valiant paper.
+  \end{proof}
+\end{thm}
 \end{document}
